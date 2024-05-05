@@ -1,0 +1,87 @@
+{
+	"info": {
+		"_postman_id": "a79be394-6398-4d59-aa5b-7eeb196043bc",
+		"name": "projectt",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30657858",
+		"_collection_link": "https://galactic-shuttle-625932.postman.co/workspace/New-Team-Workspace~fc3bf5b5-54a3-420f-a54b-b22df01e64e4/collection/30657858-a79be394-6398-4d59-aa5b-7eeb196043bc?action=share&source=collection_link&creator=30657858"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/sign-up",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"ahmed mohamed\",\r\n    \"email\":\"ahmedjj2331@gmail.com\",\r\n    \"password\":\"loppoowa\",\r\n    \"age\":12,\r\n    \"height\":185,\r\n    \"neck\":80,\r\n    \"waist\":40,\r\n    \"weight\":80,\r\n    \"gender\":\"male\",\r\n    \"id\":124232\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/sign-up",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"lol8@gmail.com\",\r\n    \"password\":\"klkspp5m\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
