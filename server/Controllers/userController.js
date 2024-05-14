@@ -65,13 +65,14 @@ const registerUser = async (req, res) => {
         waist: newUser.waist,
         weight: newUser.weight,
         gender: newUser.gender,
-        bmi: newUser.bmi,
-        BFP: newUser.BFP,
+        activity:newUser.activity,
+        bmi: bmi,
+        BFP: BFP,
         cal: newUser.cal,
         protein: newUser.protein,
         carbpercal: newUser.carbpercal,
         carbpergram: newUser.carbpergram,
-        BMR: newUser.BMR,
+        BMR:BMR,
         sugar: newUser.sugar
       },
     });
@@ -116,13 +117,14 @@ const loginUser = async (req, res) => {
           waist: user.waist,
           weight: user.weight,
           gender: user.gender,
+          activity:user.activity,
           bmi: user.bmi,
           BFP: user.BFP,
           cal: user.cal,
           protein: user.protein,
           carbpercal: user.carbpercal,
           carbpergram: user.carbpergram,
-          BMR: user.BMR,
+          BMR:user.BMR,
           sugar: user.sugar
         },
         token: token
