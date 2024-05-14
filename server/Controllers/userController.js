@@ -1,88 +1,80 @@
-
 const { default: mongoose } = require("mongoose");
 const User = require("../Models/User");
-var UserSchema=mongoose.UserSchema
-const jwt=require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
-const validator = require('validator');
 
-const bodyParser = require('body-parser');
 // Register User
 const registerUser = async (req, res) => {
-  
-  
   try {
-    const user = {
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      age:req.body.age,
-      height:req.body.height,
-      neck:req.body.neck,
-      waist:req.body.waist,
-      weight:req.body.weight,
-      gender:req.body.gender,
-      
-    };
-    console.log(user);
+    const { name, email, password, age, height, neck, waist, weight, gender } = req.body;
+
+    // Hash the password before saving it to the database
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Calculate BMI, BFP, etc.
+    const bmi = weight / ((height /100)**2);
+    const BFP = gender=="female" ? (1.20 * bmi) + (0.23 * age) - 5.4 : (1.20 * bmi) + (0.23 * age) - 16.2;
+    const cal = 0.45359237 * weight * 12;
+    const protein = weight * 1.6;
+    const carbpercal = cal / 2;
+    const carbpergram = cal / 2 / 4;
+    const BMR = gender=="female" ? ( 10 * weight ) + ( 6.25* height) - ( 5 * age) - 161 : ( 10 * weight ) + ( 6.25* height) - ( 5 * age) + 5;
+    const sugar = cal * 0.0225;
+
+    // Create a new user object with hashed password and calculated values
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      age,
+      height,
+      neck,
+      waist,
+      weight,
+      gender,
+      bmi,
+      BFP,
+      cal,
+      protein,
+      carbpercal,
+      carbpergram,
+      BMR,
+      sugar
+    });
 
     // Check if the user is already registered.
-    const existingUser = await User.findOne({ email: user.email });
-      const weight = user.weight; // Assuming weight is sent in the request body
-      const height = user.height;
-      let bmi = weight / ((height /100)**2);
-      let BFP = user.gender=="female" ? (1.20 * bmi) + (0.23 * user.age) - 5.4 : (1.20 * bmi) + (0.23 * user.age) - 16.2
-      let cal = 0.45359237 * weight * 12
-      let protein = weight * 1.6
-      let carbpercal = cal / 2 
-      let carbpergram=cal / 2 / 4 
-      let BMR =user.gender=="female" ? ( 10 * weight ) + ( 6.25* height) - ( 5 * user.age)-161 :( 10 * weight ) + ( 6.25* height) - ( 5 * user.age)+5
-      let sugar = cal * 0.0225
+    const existingUser = await User.findOne({ email: newUser.email });
     if (existingUser) {
       return res.status(409).json({
         message: "User already exists",
       });
     }
 
-    // Create User
-    user.bmi=bmi
-    user.bfp=BFP
-    user.cal=cal
-    user.protein=protein
-    user.carbpercal=carbpercal
-    user.carbpergram=carbpergram
-    user.bmr=BMR
-    user.sugar=sugar
-    await User.create(user)
-      .then((user) => {        
-        res.status(201).json({
-          message: "Registration successful",
-          user:{
-            name:user.name,
-            email: user.email,
-            age:user.age,
-            height:user.height,
-            neck:user.neck,
-            waist:user.waist,
-            weight:user.weight,
-            gender:user.gender,
-            activity:user.activity,
-            bmi:bmi,
-            BFP:BFP,
-            cal:cal,
-            protein:protein,
-            carbpercal:carbpercal,
-            carbpergram:carbpergram,
-            BMR:BMR,
-            sugar:sugar
-          },
-        });
-      })
-      .catch((error) => {
-        res.status(400).json({
-          message: "Invalid Email or Password",
-        });
-      });
+    // Save the new user to the database
+    await newUser.save();
+
+    // Respond with a success message and details of the newly registered user
+    res.status(201).json({
+      message: "Registration successful",
+      user: {
+        name: newUser.name,
+        email: newUser.email,
+        age: newUser.age,
+        height: newUser.height,
+        neck: newUser.neck,
+        waist: newUser.waist,
+        weight: newUser.weight,
+        gender: newUser.gender,
+        bmi: newUser.bmi,
+        BFP: newUser.BFP,
+        cal: newUser.cal,
+        protein: newUser.protein,
+        carbpercal: newUser.carbpercal,
+        carbpergram: newUser.carbpergram,
+        BMR: newUser.BMR,
+        sugar: newUser.sugar
+      },
+    });
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong",
@@ -92,8 +84,6 @@ const registerUser = async (req, res) => {
 };
 
 // Login user
-
-
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -126,14 +116,13 @@ const loginUser = async (req, res) => {
           waist: user.waist,
           weight: user.weight,
           gender: user.gender,
-          activity: user.activity,
           bmi: user.bmi,
-          BFP: user.bfp,
+          BFP: user.BFP,
           cal: user.cal,
           protein: user.protein,
           carbpercal: user.carbpercal,
           carbpergram: user.carbpergram,
-          BMR: user.bmr,
+          BMR: user.BMR,
           sugar: user.sugar
         },
         token: token
@@ -150,6 +139,7 @@ const loginUser = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   registerUser,
   loginUser,
