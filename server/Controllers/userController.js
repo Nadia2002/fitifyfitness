@@ -103,7 +103,12 @@ const loginUser = async (req, res) => {
 
     if (passwordMatch) {
       // If passwords match, generate JWT token
+      const bmi = user.weight / ((user.height / 100) ** 2);
+      const BFP = user.gender == "female" ? (1.20 * bmi) + (0.23 * user.age) - 5.4 : (1.20 * bmi) + (0.23 * user.age) - 16.2;
+      const BMR = user.gender == "female" ? (10 * user.weight) + (6.25 * user.height) - (5 * user.age) - 161 : (10 * user.weight) + (6.25 * user.height) - (5 * user.age) + 5;
+
       const token = jwt.sign({ user }, 'my_secret_key');
+
 
       return res.status(200).json({
         message: "Login successful",
@@ -118,13 +123,13 @@ const loginUser = async (req, res) => {
           weight: user.weight,
           gender: user.gender,
           activity:user.activity,
-          bmi: user.bmi,
-          BFP: user.BFP,
+          bmi:bmi,
+          BFP:BFP,
           cal: user.cal,
           protein: user.protein,
           carbpercal: user.carbpercal,
           carbpergram: user.carbpergram,
-          BMR:user.BMR,
+          BMR:BMR,
           sugar: user.sugar
         },
         token: token
